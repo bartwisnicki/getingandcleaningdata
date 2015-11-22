@@ -1,7 +1,7 @@
 # Loading necessary packages
 
 library(plyr)
-setwd("C:/Users/Bart/Downloads/UCI HAR Dataset")
+
 # Loading necessary data
 test <- read.table("test/X_test.txt")
 train <- read.table("train/X_train.txt")
@@ -37,6 +37,11 @@ names(test_train) <- c("subject", "activity", features[, 2][with_mean_or_std])
 activity_subject <- paste(test_train$activity, test_train$subject)
 x <- split(test_train[, -c(1,2)], activity_subject)
 tidy_test_train <- t(sapply(x, colMeans))
+k <- unlist(strsplit(rownames(tidy_test_train), " "))
+activity <- k[seq(from = 1, by = 2, length.out = length(k) / 2)]
+subject <- as.numeric(k[seq(from = 2, by = 2, length.out = length(k) / 2)])
+tidy_test_train <- as.data.frame(cbind(subject, activity, tidy_test_train))
+
 
 # Writing the dataset
 write.table(tidy_test_train, "tidy_set.txt", row.names = F)
